@@ -73,36 +73,97 @@ export const askAIAboutNotesAction = async (
     return "You don't have any notes yet.";
   }
 
-  const formattedNotes = notes
-    .map((note) =>
-      `
-      Text: ${note.text}
-      Created at: ${note.createdAt}
-      Last updated: ${note.updatedAt}
-      `.trim(),
-    )
-    .join("\n");
+  // const formattedNotes = notes
+  //   .map((note) =>
+  //     `
+  //     Text: ${note.text}
+  //     Created at: ${note.createdAt}
+  //     Last updated: ${note.updatedAt}
+  //     `.trim(),
+  //   )
+  //   .join("\n");
 
-  const messages: ChatCompletionMessageParam[] = [
-    {
-      role: "system",
-      content: `
-          You are a helpful assistant that answers questions about a user's notes. 
-          Assume all questions are related to the user's notes. 
-          Make sure that your answers are not too verbose and you speak succinctly. 
-          Your responses MUST be formatted in clean, valid HTML with proper structure. 
-          Use tags like <p>, <strong>, <em>, <ul>, <ol>, <li>, <h1> to <h6>, and <br> when appropriate. 
-          Do NOT wrap the entire response in a single <p> tag unless it's a single paragraph. 
-          Avoid inline styles, JavaScript, or custom attributes.
+  // const messages: ChatCompletionMessageParam[] = [
+  //   {
+  //     role: "system",
+  //     content: `
+  //         You are a helpful assistant that answers questions about a user's notes. 
+  //         Assume all questions are related to the user's notes. 
+  //         Make sure that your answers are not too verbose and you speak succinctly. 
+  //         Your responses MUST be formatted in clean, valid HTML with proper structure. 
+  //         Use tags like <p>, <strong>, <em>, <ul>, <ol>, <li>, <h1> to <h6>, and <br> when appropriate. 
+  //         Do NOT wrap the entire response in a single <p> tag unless it's a single paragraph. 
+  //         Avoid inline styles, JavaScript, or custom attributes.
           
-          Rendered like this in JSX:
-          <p dangerouslySetInnerHTML={{ __html: YOUR_RESPONSE }} />
+  //         Rendered like this in JSX:
+  //         <p dangerouslySetInnerHTML={{ __html: YOUR_RESPONSE }} />
     
-          Here are the user's notes:
-          ${formattedNotes}
-          `,
-    },
-  ];
+  //         Here are the user's notes:
+  //         ${formattedNotes}
+  //         `,
+  //   },
+  // ];
+
+  const formattedNotes = notes
+  .map((note) =>
+    `
+    <article class="financial-note">
+      <h3>${note.text.split('\n')[0]?.replace('Title: ', '') || 'Untitled Note'}</h3>
+      ${note.text.split('\n').slice(1).map(line => {
+        if (line.startsWith('URL:')) {
+          return `<p><strong>Source Link:</strong> <a href="${line.replace('URL: ', '')}" target="_blank" rel="noopener">View Original</a></p>`;
+        }
+        return `<p>${line}</p>`;
+      }).join('')}
+      <footer>
+        <time>Created: ${new Date(note.createdAt).toLocaleDateString()}</time>
+        ${note.updatedAt !== note.createdAt ? 
+          `<time> | Updated: ${new Date(note.updatedAt).toLocaleDateString()}</time>` : ''}
+      </footer>
+    </article>
+    `.trim()
+  )
+  .join("\n<hr>\n");
+
+const messages: ChatCompletionMessageParam[] = [
+  {
+    role: "system",
+    content: `
+        You are a <strong>Senior Financial Research Assistant</strong> specialized in equity analysis and market trends.
+        Your responses should reflect Wall Street analyst-level professionalism with these characteristics:
+        
+        <ul>
+          <li>Always reference specific data points from the notes when available</li>
+          <li>Highlight <em>key financial metrics</em>, <em>technical indicators</em>, and <em>sentiment analysis</em></li>
+          <li>Use proper financial terminology (e.g. "support/resistance levels" instead of "high/low points")</li>
+          <li>Flag potential <span class="risk">risks</span> and <span class="opportunity">opportunities</span> explicitly</li>
+          <li>Maintain concise bullet-point style for actionable insights</li>
+        </ul>
+        
+        <h4>Current Market Context (Q2 2025):</h4>
+        <ul>
+          <li>AI chip sector P/E multiples expanding</li>
+          <li>Geopolitical tensions affecting semiconductor supply chains</li>
+          <li>Fed funds rate at 4.25-4.50%</li>
+        </ul>
+        
+        <h4>Notes Database:</h4>
+        ${formattedNotes}
+        
+        <style type="text/css">
+          .risk { color: #ef4444; font-weight: 600; }
+          .opportunity { color: #10b981; font-weight: 600; }
+          article.financial-note { 
+            border-left: 3px solid #3b82f6;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+          }
+          time { font-size: 0.875rem; color: #64748b; }
+        </style>
+        `.replace(/\n\s+/g, '\n').trim(),
+  }
+];
+
 
   for (let i = 0; i < newQuestions.length; i++) {
     messages.push({ role: "system", content: newQuestions[i] });

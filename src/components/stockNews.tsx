@@ -40,7 +40,7 @@ export function StockNews({ symbol, apiKey, className }: StockNewsProps) {
       try {
         setLoading(true);
         const now = new Date();
-        const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
         const formatForAPI = (date: Date) => {
           const year = date.getFullYear();
@@ -52,7 +52,7 @@ export function StockNews({ symbol, apiKey, className }: StockNewsProps) {
         const newsData = await fetchStockNews(
           [symbol],
           10,
-          formatForAPI(yesterday),
+          formatForAPI(lastWeek),
           formatForAPI(now),
           apiKey,
         );

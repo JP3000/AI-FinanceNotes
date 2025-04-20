@@ -1,32 +1,76 @@
-## Getting Started
+# 📈 StockNews AI Notes
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css)
+![Shadcn UI](https://img.shields.io/badge/Shadcn_UI-000000?style=for-the-badge)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma)
+
+一个结合实时金融数据与AI交互的智能笔记网站
+
+## 🚀 核心功能
+
+1. **智能金融仪表盘**
+
+   - 实时美股数据可视化（Alpha Vantage API）
+
+2. **AI笔记功能**
+
+   - 金融助理对话系统
+   - 技术指标解释助手
+
+3. **数据管理系统**
+   - Supabase实时数据库集成
+   - Prisma ORM数据建模
+   - 用户数据加密存储
+
+## 📥 安装指南
 
 ```bash
-pnpm install
+# 克隆仓库
+git clone https://github.com/JP3000/AI-FinanceNotes.git
+
+# 安装依赖
+npm install
+
+# 复制环境配置
+cp .env.local
+
+# 必要环境变量配置（替换以下值）：
+# 数据库配置
+DATABASE_URL=your-database-url
+# Supabase配置
+SUPABASE_URL=your-supabase-url
+SUPABASE_ANON_KEY=your-supabase-key
+# API密钥
+ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
+DEEPSEEK_API_KEY=your_deepseek_key
+# 基础URL
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+# 可选开发配置
+NEXT_PUBLIC_DEEPSEEK_API_URL='https://api.deepseek.com'
+
 ```
 
-```bash
-npm run dev
-# or
-pnpm run dev
+### Windows系统特别配置
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **路径配置**：
+   ```json
+   // package.json
+   {
+     "scripts": {
+       "prisma:generate": "pnpm dlx prisma generate",
+       "prisma:migrate": "dotenv -e .env.local -- pnpm dlx prisma migrate dev",
+       "prisma:studio": "pnpm dlx prisma studio",
+       "migrate": "pnpm run prisma:generate && pnpm run prisma:migrate"
+     },
+     "prisma": {
+       "schema": "src/db/schema.prisma"
+     }
+   }
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🙏 致谢
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## ask AI
-
-test:What are the key risks for TSM mentioned in my notes?
-```
+- [Cole Blender](https://www.youtube.com/watch?v=6ChzCaljcaI) - [AI Notes系列教程](https://www.youtube.com/watch?v=6ChzCaljcaI) 对本项目的启发
+- [Alpha Vantage](https://www.alphavantage.co/) - 金融数据服务

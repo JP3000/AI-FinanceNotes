@@ -26,7 +26,7 @@
 
 ## 📝 项目展示
 
-- [项目截图](public\StockNews.png)
+<img src="./public/StockNews.png" alt="项目截图"  width="400">
 
 ## 📥 安装指南
 
